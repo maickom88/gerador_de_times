@@ -5,7 +5,7 @@ from sqlalchemy.dialects.postgresql import UUID
 from src.settings.database import Base
 
 
-class Goals(Base):
+class Goal(Base):
     __tablename__ = "tb_goals"
 
     id = Column(BigInteger, primary_key=True)
