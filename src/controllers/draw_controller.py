@@ -1,5 +1,6 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 
+from src.authenticator.auth import get_token
 from src.models.draw_model import DrawInput
 from src.services.draw_service import DrawService
 from src.settings.logger import logger
@@ -9,6 +10,7 @@ draw_router = {
     "router": router,
     "prefix": "/draw",
     "tags": ["Draw"],
+    "dependencies": [Depends(get_token)]
 }
 
 

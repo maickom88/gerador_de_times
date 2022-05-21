@@ -21,7 +21,8 @@ class Cup(Base):
     time = Column(Integer)
     time_additions = Column(Integer)
     is_draft = Column(Boolean, default=True)
-    teams = relationship("Team", secondary="tb_relation_cups_teams", lazy="joined")
+    teams = relationship("Team", secondary="tb_relation_cups_teams",
+                         order_by="desc(Team.victories), desc(Team.goals)", lazy="joined")
 
     created_at = Column(DateTime, default=datetime.utcnow)
     deleted_at = Column(DateTime)

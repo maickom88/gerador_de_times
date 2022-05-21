@@ -1,6 +1,7 @@
 from typing import List
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 
+from src.authenticator.auth import get_token
 from src.models.team_model import TeamOutput, TeamInput, TeamUpdate
 from src.services.team_service import TeamService
 from src.settings.logger import logger
@@ -10,6 +11,7 @@ team_router = {
     "router": router,
     "prefix": "/team",
     "tags": ["Team"],
+    "dependencies": [Depends(get_token)]
 }
 
 

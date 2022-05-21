@@ -1,6 +1,7 @@
 from typing import List
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 
+from src.authenticator.auth import get_token
 from src.models.skiil_model import SkillOutput, SkillInput
 from src.services.skill_service import SkillService
 from src.settings.logger import logger
@@ -10,6 +11,7 @@ skill_router = {
     "router": router,
     "prefix": "/skill",
     "tags": ["Skill"],
+    "dependencies": [Depends(get_token)]
 }
 
 

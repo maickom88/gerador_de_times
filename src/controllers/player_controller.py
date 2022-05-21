@@ -1,6 +1,7 @@
 from typing import List
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 
+from src.authenticator.auth import get_token
 from src.models.player_model import PlayerOutput, PlayerInput
 from src.services.player_repository import PlayerService
 from src.settings.logger import logger
@@ -10,6 +11,7 @@ player_router = {
     "router": router,
     "prefix": "/player",
     "tags": ["Player"],
+    "dependencies": [Depends(get_token)]
 }
 
 

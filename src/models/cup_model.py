@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import List, Optional
 from pydantic import BaseModel, Field
 
@@ -27,6 +28,7 @@ class CupOutput(BaseModel):
     winner: Optional[TeamOutput] = Field(None)
     is_draft: bool = Field(None)
     teams: List[TeamOutput] = Field(None)
+    created_at: datetime = Field(None)
 
     class Config:
         orm_mode = True

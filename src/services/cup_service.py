@@ -2,6 +2,7 @@ from fastapi import HTTPException
 
 from src.models.cup_model import CupInput
 from src.repositories.cup_repository import CupRepository
+from src.services.player_repository import PlayerService
 from src.services.sport_service import SportService
 from src.services.team_service import TeamService
 
@@ -11,6 +12,7 @@ class CupService:
         self.repository = CupRepository()
         self.teamService = TeamService()
         self.sportService = SportService()
+        self.playerService = PlayerService()
 
     async def create(self, input: CupInput):
         teams = []
@@ -48,6 +50,27 @@ class CupService:
 
     async def get_entities(self):
         return await self.repository.get_entities()
+
+    async def get_cups_by_player(self, guid_player):
+        player = await self.playerService.get_entity_by_guid(guid_player)
+        return await self.repository.get_cups_by_player(id_player=player.id)
+
+    async def get_winner_cups_by_player(self, guid_player):
+        player = await self.playerService.get_entity_by_guid(guid_player)
+        return await self.repository.get_winner_cups_by_player(id_player=player.id)
+
+    async def get_cup_winner(self, guid_cup: str):
+        return await self.repository.get_cup_winner(guid_cup=guid_cup)
+
+    async def get_worst_team_cup(self, guid_cup: str):
+        return await self.repository.get_worst_team_cup(guid_cup=guid_cup)
+
+    async def get_best_goalkeeper_team_cup(self, guid_cup: str):
+        return await self.repository.get_best_goalkeeper_team_cup(guid_cup=guid_cup)
+
+    async def finishing_cup(self, guid: str):
+        cup = await self.repository.get_entity_by_guid(guid)
+        return await self.repository.finishing_cup(entity=cup)
 
     async def delete_entity(self, guid: str):
         return await self.repository.delete_entity(guid)

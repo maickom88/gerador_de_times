@@ -9,7 +9,7 @@ from alembic import context
 from src.settings.database import Base
 from src.schemas import user_schema, cup_schema, goal_schema, player_schema, \
     relation_cup_team_schema, relation_team_player_schema, team_schema, \
-    sport_schema, skill_schema, position_schema
+    sport_schema, skill_schema, position_schema, match_schema
 
 config = context.config
 

@@ -2,7 +2,6 @@ from datetime import datetime
 from sqlalchemy import Column, DateTime, BigInteger
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.sql.schema import ForeignKey
-from sqlalchemy.orm import relationship
 
 from src.settings.database import Base
 

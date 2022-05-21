@@ -1,6 +1,7 @@
 from typing import List
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 
+from src.authenticator.auth import get_token
 from src.models.position_model import PositionOutput, PositionInput
 from src.services.position_service import PositionService
 from src.settings.logger import logger
@@ -10,6 +11,7 @@ position_router = {
     "router": router,
     "prefix": "/position",
     "tags": ["Position"],
+    "dependencies": [Depends(get_token)]
 }
 
 

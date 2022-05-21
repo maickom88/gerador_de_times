@@ -1,6 +1,7 @@
 from typing import List
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 
+from src.authenticator.auth import get_token
 from src.models.sport_model import SportOutput, SportInput
 from src.services.sport_service import SportService
 from src.settings.logger import logger
@@ -10,6 +11,7 @@ sport_router = {
     "router": router,
     "prefix": "/sport",
     "tags": ["Sport"],
+    "dependencies": [Depends(get_token)]
 }
 
 

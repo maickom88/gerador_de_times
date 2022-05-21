@@ -48,6 +48,9 @@ class PlayerService:
     async def get_entities(self):
         return await self.repository.get_entities()
 
+    async def get_entity(self, **kwargs):
+        return await self.repository.get_entity(**kwargs)
+
     async def get_players_by_user(self, guid: str):
         user = await self.userService.get_entity_by_guid(guid)
         return await self.repository.get_players_by_user(user_responsible=user.id, deleted_at=None)
