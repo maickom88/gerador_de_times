@@ -1,5 +1,6 @@
 from typing import List, Optional
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, responses
+from starlette.status import HTTP_204_NO_CONTENT
 
 from src.authenticator.auth import get_token
 from src.models.goal_model import GoalOutput, GoalInput
@@ -58,9 +59,6 @@ async def get_goals_by_player(guid: str):
     return await service.get_goals_by_player(guid)
 
 
-
-
-
 @router.get(path="/match/{guid}", response_model=List[GoalOutput])
 async def get_goals_by_match(guid: str):
     logger.info("Starting request to get_goals_by_match")
@@ -72,4 +70,5 @@ async def get_goals_by_match(guid: str):
 async def delete_goal(guid: str):
     logger.info("Starting request to delete_goal")
     service = GoalService()
-    return await service.delete_entity(guid)
+    await service.delete_entity(guid)
+    return responses.Response(status_code=HTTP_204_NO_CONTENT)

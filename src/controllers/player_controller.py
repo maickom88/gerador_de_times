@@ -2,6 +2,7 @@ from typing import List
 from fastapi import APIRouter, Depends
 
 from src.authenticator.auth import get_token
+from src.models.performace_model import PerformaceOutput
 from src.models.player_model import PlayerOutput, PlayerInput
 from src.services.player_repository import PlayerService
 from src.settings.logger import logger
@@ -27,6 +28,13 @@ async def get_player(guid: str):
     logger.info("Starting request to get_player")
     service = PlayerService()
     return await service.get_entity_by_guid(guid)
+
+
+@router.get(path="/{guid}/performace", response_model=PerformaceOutput)
+async def get_player(guid: str):
+    logger.info("Starting request to get_player")
+    service = PlayerService()
+    return await service.get_performace(guid)
 
 
 @router.get(path="/user/{guid}", response_model=List[PlayerOutput])

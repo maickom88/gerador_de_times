@@ -50,6 +50,20 @@ class CupRepository:
             raise BusinessError(
                 f"Error on persist get a entity: {e}")
 
+    async def get_worst_team_cup(self, guid_cup: str) -> Team:
+        try:
+            entity = self.query().filter_by(guid=guid_cup).first()
+            worst_team = None
+            for team in entity.teams:
+                if worst_team is None:
+                    worst_team = team
+                if team.victories < worst_team.victories:
+                    worst_team = team
+            return worst_team
+        except Exception as e:
+            raise BusinessError(
+                f"Error on persist get a entity: {e}")
+
     async def get_cup_winner(self, guid_cup: str) -> Team:
         try:
             entity = self.query().filter_by(guid=guid_cup).first()
@@ -75,11 +89,6 @@ class CupRepository:
                 for player in team_with_the_lowest_negative_balance.players:
                     if player.position.name.upper() == 'Goleiro'.upper():
                         goalkeeper = player
-                if goalkeeper is None:
-                    return JSONResponse(
-                        status_code=404,
-                        content={"detail": 'Goalkeeper not informed'}
-                    )
                 return goalkeeper
             return
         except Exception as e:
@@ -97,6 +106,13 @@ class CupRepository:
     async def get_entities(self) -> List[Cup]:
         try:
             return self.query().filter(Cup.deleted_at.is_(None)).all()
+        except Exception as e:
+            raise BusinessError(
+                f"Error on persist get a entity: {e}")
+
+    async def get_entities_by_user(self, **kwargs) -> List[Cup]:
+        try:
+            return self.query().filter_by(**kwargs).all()
         except Exception as e:
             raise BusinessError(
                 f"Error on persist get a entity: {e}")

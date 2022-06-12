@@ -2,6 +2,7 @@ from fastapi import HTTPException
 
 from urllib.parse import unquote
 
+from src.models.performace_model import PerformaceOutput
 from src.models.player_model import PlayerInput
 from src.repositories.player_repository import PlayerRepository
 from src.services.position_service import PositionService
@@ -41,6 +42,29 @@ class PlayerService:
             entity = await self.repository.get_entity_by_guid(guid=guid)
             if entity is None:
                 raise HTTPException(status_code=404, detail="Player not found")
+            return entity
+        else:
+            raise HTTPException(status_code=400, detail="Guid is required")
+
+    async def get_performace(self, guid: str):
+        if guid is not None:
+            entity = await self.repository.get_entity_by_guid(guid=guid)
+            if entity is None:
+                raise HTTPException(status_code=404, detail="Player not found")
+
+            from src.services.cup_service import CupService
+            from src.services.goal_service import GoalService
+            cup_service = CupService()
+            goal_service = GoalService()
+
+            total_cups = await cup_service.get_cups_by_player(guid)
+            total_victories = await cup_service.get_winner_cups_by_player(guid)
+            total_goals = await goal_service.get_goals_by_player(guid)
+
+            entity = PerformaceOutput()
+            entity.goals = total_goals
+            entity.total_winner_cups = total_victories
+            entity.total_number_of_cup_participations = total_cups
             return entity
         else:
             raise HTTPException(status_code=400, detail="Guid is required")

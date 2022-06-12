@@ -25,9 +25,9 @@ class DrawService:
         index = 0
         while len(teams) < input.number_of_teams:
             if len(team) >= players_per_team:
-                teams.append(team)
+                teams.append({"team": team})
                 team = []
             else:
                 team.append(players[index])
                 index = index + 1
-        return teams
+        return {"teams": teams}

@@ -9,6 +9,7 @@ from src.errors.business_error import BusinessError
 from src.models.goal_model import GoalInput
 from src.schemas.cup_schema import Cup
 from src.schemas.goal_schema import Goal
+from src.schemas.match_schema import Match
 from src.services.player_repository import PlayerService
 from src.settings.logger import logger
 
@@ -61,16 +62,20 @@ class GoalRepository:
 
     async def get_top_goals_player(self, cup_id: str):
         try:
+            goals = None
+            player = None
             if cup_id is not None:
                 entity = self.query(Goal.id_player, func.count(Goal.id).
-                                    label('goals')).join(Goal.game).filter(Cup.id == cup_id) \
+                                    label('goals')).join(Goal.game).filter(Match.id_cup == cup_id) \
                     .group_by(Goal.id_player).order_by(desc('goals')).first()
             else:
                 entity = self.query(Goal.id_player, func.count(Goal.id).
                                     label('goals')).join(Goal.game)\
                     .group_by(Goal.id_player).order_by(desc('goals')).first()
-            player = await self.playerService.get_entity(id=entity.id_player)
-            return {"goals": entity.goals, "player": player}
+            if entity is not None:
+                player = await self.playerService.get_entity(id=entity.id_player)
+                goals = entity.goals
+            return {"goals": goals, "player": player}
         except Exception as e:
             raise BusinessError(
                 f"Error on persist get a entity: {e}")

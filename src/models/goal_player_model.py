@@ -5,7 +5,7 @@ from src.models.player_model import PlayerOutput
 
 
 class GoalPlayerOutput(BaseModel):
-    goals: Optional[str] = Field(None)
+    goals: Optional[int] = Field(None)
     player: PlayerOutput = Field(None)
 
     class Config:

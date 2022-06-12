@@ -1,7 +1,8 @@
-from typing import List
+from typing import List, Optional
 from fastapi import APIRouter, Depends
 
 from src.authenticator.auth import get_token
+from src.models.cup_information_model import CupInforamtionOutput
 from src.models.cup_model import CupOutput, CupInput
 from src.models.player_cup_model import PlayerCupOutput, PlayerWinnerOutput
 from src.models.player_model import PlayerOutput
@@ -19,10 +20,10 @@ cup_router = {
 
 
 @router.get(path="", response_model=List[CupOutput])
-async def get_cups():
+async def get_cups(email_user: Optional[str] = None):
     logger.info("Starting request to get_cups")
     service = CupService()
-    return await service.get_entities()
+    return await service.get_entities(email_user)
 
 
 @router.get(path="/{guid}", response_model=CupOutput)
@@ -62,21 +63,28 @@ async def finishing_cup(guid: str):
     return await service.finishing_cup(guid=guid)
 
 
-@router.get(path="/{guid}/winner", response_model=TeamOutput, status_code=201)
+@router.get(path="/{guid}/winner", response_model=TeamOutput)
 async def get_cup_winner(guid: str):
     logger.info("Starting request to get_team_winner")
     service = CupService()
     return await service.get_cup_winner(guid_cup=guid)
 
 
-@router.get(path="/{guid}/worst-team", response_model=TeamOutput, status_code=201)
+@router.get(path="/{guid}/informations", response_model=CupInforamtionOutput)
+async def get_cup_informations(guid: str):
+    logger.info("Starting request to get_cup_informations")
+    service = CupService()
+    return await service.get_cup_informations(guid_cup=guid)
+
+
+@router.get(path="/{guid}/worst-team", response_model=TeamOutput)
 async def get_worst_team_cup(guid: str):
     logger.info("Starting request to get_worst_team_cup")
     service = CupService()
     return await service.get_worst_team_cup(guid_cup=guid)
 
 
-@router.get(path="/{guid}/best-goalkeeper", response_model=PlayerOutput, status_code=201)
+@router.get(path="/{guid}/best-goalkeeper", response_model=PlayerOutput)
 async def get_best_goalkeeper_team_cup(guid: str):
     logger.info("Starting request to get_best_goalkeeper_team_cup")
     service = CupService()
