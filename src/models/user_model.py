@@ -20,7 +20,6 @@ class UserOutput(BaseModel):
     guid: Optional[str] = Field(None)
     email: str = Field(None)
     name: str = Field(None)
-    document: str = Field(None)
     first_access: bool = Field(None)
     photo: str = Field(None)
     role: RolesEnum = Field(None)

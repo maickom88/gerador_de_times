@@ -1,38 +1,29 @@
 import uuid
 from datetime import datetime
 from typing import List
-from urllib.parse import unquote
 
 from fastapi_sqlalchemy import db
 
 from src.errors.business_error import BusinessError
-from src.models.user_model import UserInput
-from src.schemas.user_schema import User
+from src.schemas.relation_cup_team_schema import RelationCupTeam
 from src.settings.logger import logger
 
 
-class UserRepository:
+class RelationCupTeamRepository:
     def __init__(self):
         self.db = db
 
     def query(self):
-        return self.db.session.query(User)
+        return self.db.session.query(RelationCupTeam)
 
-    async def get_entity_by_guid(self, guid: str) -> User:
+    async def get_entity_by_guid(self, guid: str) -> RelationCupTeam:
         try:
-            return self.query().filter(User.guid == guid).first()
+            return self.query().filter(RelationCupTeam.guid == guid).first()
         except Exception as e:
             raise BusinessError(
                 f"Error on persist get a entity: {e}")
 
-    async def get_entity_by_email(self, email: str) -> User:
-        try:
-            return self.query().filter(User.email == email).first()
-        except Exception as e:
-            raise BusinessError(
-                f"Error on persist get a entity: {e}")
-
-    async def get_entity(self, **kwargs) -> User:
+    async def get_entity(self, **kwargs) -> RelationCupTeam:
         try:
             return self.query().filter_by(**kwargs).first()
         except Exception as e:
@@ -47,14 +38,14 @@ class UserRepository:
         else:
             raise BusinessError("Entity doesn't exists")
 
-    async def get_entities(self) -> List[User]:
+    async def get_entities(self) -> List[RelationCupTeam]:
         try:
-            return self.query().filter(User.deleted_at.is_(None)).all()
+            return self.query().filter(RelationCupTeam.deleted_at.is_(None)).all()
         except Exception as e:
             raise BusinessError(
                 f"Error on persist get a entity: {e}")
 
-    async def update(self, entity: User) -> User:
+    async def update(self, entity: RelationCupTeam) -> RelationCupTeam:
         try:
             self.db.session.add(entity)
             self.db.session.flush()
@@ -65,14 +56,12 @@ class UserRepository:
             raise BusinessError(
                 f"Error on persist entity: {entity.dict()}: {e}")
 
-    async def create(self, entity: UserInput) -> User:
+    async def create(self, id_team: str, id_cup: str) -> RelationCupTeam:
         try:
+            entity = RelationCupTeam()
+            entity.team_id = id_team
+            entity.cup_id = id_cup
             entity.guid = str(uuid.uuid4())
-            entity = User(**entity.dict())
-            try:
-                entity.photo = unquote(input.photo)
-            except Exception as e:
-                print(e)
             self.db.session.add(entity)
             self.db.session.flush()
             return entity

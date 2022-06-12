@@ -1,21 +1,19 @@
 from datetime import datetime
-from sqlalchemy import Column, String, DateTime, BigInteger, Boolean
+from sqlalchemy import Column, String, DateTime, BigInteger
 from sqlalchemy.dialects.postgresql import UUID
 
 from src.settings.database import Base
+from sqlalchemy.sql.schema import ForeignKey
 
 
-class Sports(Base):
-    __tablename__ = "tb_sports"
+class Position(Base):
+    __tablename__ = "tb_positions"
 
     id = Column(BigInteger, primary_key=True)
     guid = Column(UUID, index=True)
     name = Column(String)
     description = Column(String)
-    photo = Column(String)
-    tutorial = Column(String)
-    icon = Column(String)
-    is_available = Column(Boolean)
+    id_sport = Column(BigInteger, ForeignKey("tb_sports.id"))
 
     created_at = Column(DateTime, default=datetime.utcnow)
     deleted_at = Column(DateTime)

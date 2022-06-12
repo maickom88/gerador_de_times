@@ -6,33 +6,26 @@ from urllib.parse import unquote
 from fastapi_sqlalchemy import db
 
 from src.errors.business_error import BusinessError
-from src.models.user_model import UserInput
-from src.schemas.user_schema import User
+from src.models.skiil_model import SkillInput
+from src.schemas.skill_schema import Skill
 from src.settings.logger import logger
 
 
-class UserRepository:
+class SkillRepository:
     def __init__(self):
         self.db = db
 
     def query(self):
-        return self.db.session.query(User)
+        return self.db.session.query(Skill)
 
-    async def get_entity_by_guid(self, guid: str) -> User:
+    async def get_entity_by_guid(self, guid: str) -> Skill:
         try:
-            return self.query().filter(User.guid == guid).first()
+            return self.query().filter(Skill.guid == guid).first()
         except Exception as e:
             raise BusinessError(
                 f"Error on persist get a entity: {e}")
 
-    async def get_entity_by_email(self, email: str) -> User:
-        try:
-            return self.query().filter(User.email == email).first()
-        except Exception as e:
-            raise BusinessError(
-                f"Error on persist get a entity: {e}")
-
-    async def get_entity(self, **kwargs) -> User:
+    async def get_entity(self, **kwargs) -> Skill:
         try:
             return self.query().filter_by(**kwargs).first()
         except Exception as e:
@@ -47,14 +40,14 @@ class UserRepository:
         else:
             raise BusinessError("Entity doesn't exists")
 
-    async def get_entities(self) -> List[User]:
+    async def get_entities(self) -> List[Skill]:
         try:
-            return self.query().filter(User.deleted_at.is_(None)).all()
+            return self.query().filter(Skill.deleted_at.is_(None)).all()
         except Exception as e:
             raise BusinessError(
                 f"Error on persist get a entity: {e}")
 
-    async def update(self, entity: User) -> User:
+    async def update(self, entity: Skill) -> Skill:
         try:
             self.db.session.add(entity)
             self.db.session.flush()
@@ -65,10 +58,10 @@ class UserRepository:
             raise BusinessError(
                 f"Error on persist entity: {entity.dict()}: {e}")
 
-    async def create(self, entity: UserInput) -> User:
+    async def create(self, entity: SkillInput) -> Skill:
         try:
             entity.guid = str(uuid.uuid4())
-            entity = User(**entity.dict())
+            entity = Skill(**entity.dict())
             try:
                 entity.photo = unquote(input.photo)
             except Exception as e:

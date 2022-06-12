@@ -1,19 +1,21 @@
 from datetime import datetime
-from sqlalchemy import Column, DateTime, BigInteger, Integer
+from sqlalchemy import Column, String, DateTime, BigInteger, Boolean
 from sqlalchemy.dialects.postgresql import UUID
 
 from src.settings.database import Base
 
 
-class Skills(Base):
-    __tablename__ = "tb_skills"
+class Sport(Base):
+    __tablename__ = "tb_sports"
 
     id = Column(BigInteger, primary_key=True)
     guid = Column(UUID, index=True)
-    strength = Column(Integer, default=0)
-    velocity = Column(Integer, default=0)
-    completion = Column(Integer, default=0)
-    dribble = Column(Integer, default=0)
+    name = Column(String)
+    description = Column(String)
+    photo = Column(String)
+    tutorial = Column(String)
+    icon = Column(String)
+    is_available = Column(Boolean)
 
     created_at = Column(DateTime, default=datetime.utcnow)
     deleted_at = Column(DateTime)

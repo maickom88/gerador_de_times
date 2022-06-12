@@ -28,6 +28,27 @@ class UserService:
         user.photo = photo
         await self.repository.update(user)
 
+    async def update_name(self, guid: str, name: str):
+        user = await self.repository.get_entity_by_guid(guit)
+        user.name = name
+        return await self.repository.update(user)
+
+    async def notifier(self, token: str = None, name: str = None):
+        if token is None:
+            return
+        from src.services.firebase_admin_service import FirebaseAdminService
+        uid = FirebaseAdminService.get_uid(token)
+        user = FirebaseAdminService.get_user(uid)
+        entity = await self.repository.get_entity_by_email(user.email)
+        if entity is not None:
+            return entity
+        new_user = UserInput()
+        new_user.email = user.email
+        if name is not None:
+            new_user.name = name
+        new_user.photo = user.photo_url
+        return await self.create(new_user)
+
     async def update(self, input: UserInput):
         if input.guid is None or len(input.guid) < 32:
             raise HTTPException(status_code=400, detail="Guid User is required")
@@ -40,6 +61,15 @@ class UserService:
     async def get_entity_by_guid(self, guid: str):
         if guid is not None:
             entity = await self.repository.get_entity_by_guid(guid=guid)
+            if entity is None:
+                raise HTTPException(status_code=404, detail="User not found")
+            return entity
+        else:
+            raise HTTPException(status_code=400, detail="Guid is required")
+
+    async def get_entity_by_email(self, email: str):
+        if email is not None:
+            entity = await self.repository.get_entity_by_email(email=email)
             if entity is None:
                 raise HTTPException(status_code=404, detail="User not found")
             return entity

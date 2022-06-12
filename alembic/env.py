@@ -7,10 +7,9 @@ from sqlalchemy import create_engine
 from alembic import context
 
 from src.settings.database import Base
-from src.schemas import help_schema, help_like_schema, user_schema, \
-    information_schema, location_schema, portfolio_schema, terms_of_conditions_schema, \
-    service_schema, service_value_schema, type_service_schema, available_schema, \
-    achievements_schema, sub_category_schema, problem_schema
+from src.schemas import user_schema, cup_schema, goal_schema, player_schema, \
+    relation_cup_team_schema, relation_team_player_schema, team_schema, \
+    sport_schema, skill_schema, position_schema, match_schema
 
 config = context.config
 
