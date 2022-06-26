@@ -57,6 +57,14 @@ async def update_user(input: UserInput):
     return await service.update(input)
 
 
+@router.put(path="update-name/{guid}", response_model=UserOutput)
+async def update_name_user(guid: str, name: str):
+    logger.info("Starting request to user_controller.name")
+
+    service = UserService()
+    return await service.update_name_user(guid, name)
+
+
 @router.delete(path="/{guid}", status_code=204)
 async def delete_user(guid: str):
     logger.info("Starting request to user_controller.delete_user")

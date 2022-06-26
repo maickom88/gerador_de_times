@@ -1,6 +1,8 @@
 from fastapi import HTTPException
 
 from urllib.parse import unquote
+
+from src.enums.roles_enum import RolesEnum
 from src.models.user_model import UserInput
 from src.repositories.user_repository import UserRepository
 
@@ -29,7 +31,7 @@ class UserService:
         await self.repository.update(user)
 
     async def update_name(self, guid: str, name: str):
-        user = await self.repository.get_entity_by_guid(guit)
+        user = await self.repository.get_entity_by_guid(guid)
         user.name = name
         return await self.repository.update(user)
 
@@ -49,6 +51,13 @@ class UserService:
         new_user.photo = user.photo_url
         return await self.create(new_user)
 
+    async def update_status_account(self, guid_user: str, status: RolesEnum):
+        if guid_user is None or len(guid_user) < 32:
+            raise HTTPException(status_code=400, detail="Guid User is required")
+        entity = await self.repository.get_entity_by_guid(guid=guid_user)
+        entity.role = status
+        return await self.repository.update(entity)
+
     async def update(self, input: UserInput):
         if input.guid is None or len(input.guid) < 32:
             raise HTTPException(status_code=400, detail="Guid User is required")
@@ -56,6 +65,13 @@ class UserService:
         entity.name = input.name
         entity.photo = unquote(input.photo)
         entity.first_access = input.first_access
+        return await self.repository.update(entity)
+
+    async def update_name_user(self, guid: str, name: str):
+        if input.guid is None or len(input.guid) < 32:
+            raise HTTPException(status_code=400, detail="Guid User is required")
+        entity = await self.repository.get_entity_by_guid(guid=guid)
+        entity.name = input.name
         return await self.repository.update(entity)
 
     async def get_entity_by_guid(self, guid: str):
