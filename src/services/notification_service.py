@@ -52,8 +52,11 @@ class NotificationService:
         return await self.repository.get_entity(**kwargs)
 
     async def get_notifications_by_user(self, guid: str):
-        user = await self.userService.get_entity_by_guid(guid)
-        return await self.repository.get_notifications_by_user(id_user=user.id, deleted_at=None)
+        if guid is not None:
+            user = await self.userService.get_entity_by_guid(guid)
+            return await self.repository.get_notifications_by_user(id_user=user.id, deleted_at=None)
+        else:
+            raise HTTPException(status_code=400, detail="Guid is required")
 
     async def delete_entity(self, guid: str):
         return await self.repository.delete_entity(guid)
