@@ -38,8 +38,9 @@ class DrawService:
             else:
                 team.append(players[index])
                 index = index + 1
-        for number in range(input.number_of_teams):
-            teams[number]["team"].append(goalkeepers[number])
+        if len(goalkeepers) == input.number_of_teams:
+            for number in range(input.number_of_teams):
+                teams[number]["team"].append(goalkeepers[number])
         return {"teams": teams}
 
     @staticmethod
@@ -78,6 +79,7 @@ class DrawService:
             else:
                 index += 1
 
-        for number in range(input.number_of_teams):
-            teams[number]["team"].append(goalkeepers[number])
+        if len(goalkeepers) == input.number_of_teams:
+            for number in range(input.number_of_teams):
+                teams[number]["team"].append(goalkeepers[number])
         return {"teams": teams}
