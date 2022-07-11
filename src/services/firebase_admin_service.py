@@ -66,6 +66,18 @@ class FirebaseAdminService:
             raise LoginException(detail=f"Invalid token: {e}")
 
     @staticmethod
+    def delete_account(email: str) -> bool:
+        try:
+            user = auth.get_user_by_email(email)
+            if user is not None:
+                auth.revoke_refresh_tokens(user.uid)
+                auth.delete_user(user.uid)
+                return True
+            return False
+        except Exception as e:
+            raise LoginException(detail=f"Invalid token: {e}")
+
+    @staticmethod
     def get_user(uid: str):
         return auth.get_user(uid)
 
