@@ -43,6 +43,9 @@ class UserService:
         user = FirebaseAdminService.get_user(uid)
         entity = await self.repository.get_entity_by_email(user.email)
         if entity is not None:
+            if entity.deleted_at is not None:
+                entity.deleted_at = None
+                await self.repository.update(entity)
             return entity
         new_user = UserInput()
         new_user.email = user.email
@@ -96,4 +99,8 @@ class UserService:
         return await self.repository.get_entities()
 
     async def delete_entity(self, guid: str):
-        return await self.repository.delete_entity(guid)
+        from src.services.firebase_admin_service import FirebaseAdminService
+        entity = await self.get_entity_by_guid(guid)
+        await self.repository.delete_entity(guid)
+        result = FirebaseAdminService.delete_account(entity.email)
+        return result

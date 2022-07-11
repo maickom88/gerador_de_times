@@ -1,6 +1,8 @@
 from typing import List, Optional
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, responses
+
+from starlette.status import HTTP_204_NO_CONTENT
 
 from fastapi.routing import Request
 from src.authenticator.auth import get_token
@@ -70,4 +72,5 @@ async def delete_user(guid: str):
     logger.info("Starting request to user_controller.delete_user")
 
     service = UserService()
-    return await service.delete_entity(guid)
+    await service.delete_entity(guid)
+    return responses.Response(status_code=HTTP_204_NO_CONTENT)
