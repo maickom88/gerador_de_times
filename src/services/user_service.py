@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from fastapi import HTTPException
 
 from urllib.parse import unquote
@@ -71,10 +73,10 @@ class UserService:
         return await self.repository.update(entity)
 
     async def update_name_user(self, guid: str, name: str):
-        if input.guid is None or len(input.guid) < 32:
+        if guid is None or len(guid) < 32:
             raise HTTPException(status_code=400, detail="Guid User is required")
         entity = await self.repository.get_entity_by_guid(guid=guid)
-        entity.name = input.name
+        entity.name = name
         return await self.repository.update(entity)
 
     async def get_entity_by_guid(self, guid: str):
@@ -82,6 +84,15 @@ class UserService:
             entity = await self.repository.get_entity_by_guid(guid=guid)
             if entity is None:
                 raise HTTPException(status_code=404, detail="User not found")
+            from src.repositories.purchase_repository import PurchaseRepository
+            purchase_repository = PurchaseRepository()
+            purchase = await purchase_repository.get_active_purchase_by_player(id_user=entity.id, deleted_at=None)
+            if purchase.date_expired_purchase < datetime.now():
+                entity.role = RolesEnum.FREE
+                await self.repository.update(entity)
+            else:
+                entity.role = RolesEnum.PREMIUM
+                await self.repository.update(entity)
             return entity
         else:
             raise HTTPException(status_code=400, detail="Guid is required")

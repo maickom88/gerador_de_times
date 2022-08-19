@@ -18,7 +18,7 @@ class PurchaseService:
                 input.guid_user = user.id
                 entity = await self.repository.create(input)
                 if entity is not None:
-                    await self.userService.update_status_account(input.guid_user, RolesEnum.PREMIUM)
+                    await self.userService.update_status_account(user.guid, RolesEnum.PREMIUM)
                     return entity
         raise HTTPException(status_code=400, detail="Guid User is required")
 

@@ -56,7 +56,7 @@ class FirebaseAdminService:
             raise LoginException(detail=f"Invalid token: {e}")
 
     @staticmethod
-    def get_uid(token: str) -> bool:
+    def get_uid(token: str):
         try:
             decoded_token = auth.verify_id_token(token)
             if decoded_token.get("uid"):
