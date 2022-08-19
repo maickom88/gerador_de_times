@@ -2,6 +2,7 @@ from fastapi import HTTPException
 
 from src.models.notification_model import NotificationInput
 from src.repositories.notification_repository import NotificationRepository
+from src.services.firebase_admin_service import FirebaseAdminService
 from src.services.user_service import UserService
 
 
@@ -11,14 +12,19 @@ class NotificationService:
         self.userService = UserService()
 
     async def create(self, input: NotificationInput):
+        message = FirebaseAdminService()
         if input.guid_user is not None:
             user = await self.userService.get_entity_by_guid(input.guid_user)
             input.guid_user = user.id
-            return await self.repository.create(input)
+            entity = await self.repository.create(input)
+            input.guid_user = user.guid
+            await message.send_notification(input)
+            return entity
         users = await self.userService.get_entities()
         for user in users:
             input.guid_user = user.id
             await self.repository.create(input)
+        await message.send_multicast(input)
         return input
 
     async def update(self, input: NotificationInput):
