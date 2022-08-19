@@ -43,6 +43,21 @@ class FirebaseAdminService:
             return response
         return
 
+    async def send_notification(self, notification_input: NotificationInput):
+        devices = await self.device_service.get_devices_by_user(notification_input.guid_user)
+        if len(devices) > 0:
+            message = messaging.MulticastMessage(
+                notification=Notification(
+                    title=notification_input.title,
+                    body=notification_input.description
+                ),
+                data=notification_input.data,
+                tokens=[devices[0].token],
+            )
+            response = messaging.send_multicast(message)
+            return response
+        return
+
     @staticmethod
     def validate_token(id_token: str) -> bool:
         try:

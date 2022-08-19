@@ -68,8 +68,9 @@ class DeviceRepository:
         try:
             entity = Device()
             entity.guid = str(uuid.uuid4())
-            entity.token = input.token
             entity.platform = input.platform
+            entity.token = input.token
+            entity.id_user = input.guid_user
             self.db.session.add(entity)
             self.db.session.flush()
             return entity

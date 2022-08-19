@@ -22,9 +22,8 @@ class DeviceService:
         return await self.update(input)
 
     async def update(self, input: DeviceInput):
-        if input.guid is None or len(input.guid) < 32:
-            raise HTTPException(status_code=400, detail="Guid Device is required")
-        entity = await self.repository.get_entity_by_guid(guid=input.guid)
+        entity = await self.get_devices_by_user(guid=input.guid_user)
+        entity = entity[0]
         entity.token = input.token
         entity.platform = input.platform
         return await self.repository.update(entity)
@@ -43,7 +42,7 @@ class DeviceService:
 
     async def get_tokens(self):
         entities = await self.repository.get_entities()
-        return map(lambda entity: entity.token, entities)
+        return list(map(lambda entity: entity.token, entities))
 
     async def get_entity(self, **kwargs):
         return await self.repository.get_entity(**kwargs)
