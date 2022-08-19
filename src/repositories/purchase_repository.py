@@ -1,5 +1,5 @@
 import uuid
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import List
 
 from fastapi_sqlalchemy import db
@@ -78,7 +78,7 @@ class PurchaseRepository:
             entity.guid = str(uuid.uuid4())
             entity.id_user = input.guid_user
             entity.date_purchase = datetime.utcnow()
-            entity.date_expired_purchase = entity.date_purchase + datetime.timedelta(days=30)
+            entity.date_expired_purchase = datetime.utcnow() + timedelta(days=30)
             entity.platform = input.platform
             entity.price_br = input.price_br
             entity.price_usd = input.price_usd
