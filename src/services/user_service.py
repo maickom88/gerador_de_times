@@ -87,13 +87,13 @@ class UserService:
             from src.repositories.purchase_repository import PurchaseRepository
             purchase_repository = PurchaseRepository()
             purchase = await purchase_repository.get_active_purchase_by_player(id_user=entity.id, deleted_at=None)
-            if purchase is not None:
+            if len(purchase) > 0:
                 if purchase.date_expired_purchase < datetime.now():
                     entity.role = RolesEnum.FREE
                     await self.repository.update(entity)
-            else:
-                entity.role = RolesEnum.PREMIUM
-                await self.repository.update(entity)
+                else:
+                    entity.role = RolesEnum.PREMIUM
+                    await self.repository.update(entity)
             return entity
         else:
             raise HTTPException(status_code=400, detail="Guid is required")
